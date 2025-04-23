@@ -1,35 +1,89 @@
-#include <iostream>
-using namespace std;
+#include "logic.h"
 
-int find_max_element(int size, int** m) {
-	int max = -2147483648;
-	bool n;
-	for (int i = 0; i < size; i++)
-	{
-		n = true;
-		for (int j = 1; j < size; j++)
-		{
-			if (m[i][j] < m[i][j - 1]) {
-				n = false;
-			}
-			if (n == true) {
+bool sorted(const int* row, int size) {
+    bool in = true, dec = true;
+    for (int i = 1; i < size; ++i) {
+        if (row[i] < row[i - 1]) in = false;
+        if (row[i] > row[i - 1]) dec = false;
+    }
+    return in|| dec;
+}
 
-				for (int i1 = 0; i1 < size; i1++)
-				{
+int find_max(int matrix[][100], int rows, int cols) {
+    int maxVal = -2147483648;
+    for (int i = 0; i < rows; ++i) {
+        if (sorted(matrix[i], cols)) {
+            for (int j = 0; j < cols; ++j) {
+                if (matrix[i][j] > maxVal) maxVal = matrix[i][j];
+            }
+        }
+    }
+    return maxVal;
+}
 
-					for (int j1 = 1; j1 < size; j1++)
-					{
+int find_row_with_longest_sequence(int matrix[][100], int rows, int cols) {
+    int max = 0, rowi = -1;
+    for (int i = 0; i < rows; ++i) {
+        int current = 1;
+        for (int j = 1; j < cols; ++j) {
+            if (matrix[i][j] == matrix[i][j - 1]) {
+                current++;
+            }
+            else {
+                current = 1;
+            }
+            if (current > max) {
+                max = current;
+                rowi = i;
+            }
+        }
+    }
+    return rowi;
+}
 
-						if (max < m[i1][j1]) {
-							max = m[i1][j1];
-						}
-					}
 
-				}
-			}
+int find_max_consecutive_sequence(const int* row, int size) {
+    int maxi = 1, currenti = 1;
+    int maxd = 1, currentd = 1;
 
+    for (int i = 1; i < size; ++i) {
+        if (row[i] > row[i - 1]) {
+            currenti++;
+            if (currenti > maxi) {
+                maxi = currenti;
+            }
+            currentd = 1;
+        }
+        else if (row[i] < row[i - 1]) {
+            currentd++;
+            if (currentd > maxd) {
+                maxd= currentd;
+            }
+            currenti = 1;
+        }
+        else {
+            currenti = 1;
+            currenti = 1;
+        }
+    }
 
-		}
-	}
-	return max;
+    return maxi > maxd ? maxi : maxd;
+}
+
+int sum_between_positive(const int* row, int size) {
+    int sum = 0, firstPosIndex = -1;
+    for (int i = 0; i < size; ++i) {
+        if (row[i] > 0) {
+            if (firstPosIndex == -1) {
+                firstPosIndex = i;
+            }
+            else {
+                for (int j = firstPosIndex + 1; j < i; ++j) {
+                    sum += row[j];
+                }
+                break;
+            }
+        }
+    }
+    return sum;
 }
